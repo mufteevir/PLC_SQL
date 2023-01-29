@@ -1,0 +1,52 @@
+import pymcprotocol
+from SQLConnect import mysqlquery
+from time import sleep
+IP = "10.128.127.207"
+i = 0
+while 1:
+    try:
+        pymc3e=pymcprotocol.Type3E()
+        pymc3e.connect(IP, 5555)
+        line_values = pymc3e.batchread_wordunits(headdevice="D9950",readsize=1)
+        #print(line_id[0])
+        line_id = line_values[0]
+        event_values = pymc3e.batchread_wordunits(headdevice="D9951",readsize=1)
+        #print(event_id[0])
+        event_id = event_values[0]
+        master_values = pymc3e.batchread_wordunits(headdevice="D9953",readsize=1)
+        #print(master_id[0])
+        master_id = master_values[0]
+        jig_values=pymc3e.batchread_wordunits(headdevice="D9960",readsize=4)
+        a1 = jig_values[0] & 0xff
+        a2 = (jig_values[0]>>8) & 0xff
+        a3 = jig_values[1] & 0xff
+        a4 = (jig_values[1]>>8) & 0xff
+        a5 = jig_values[2] & 0xff
+        a6 = (jig_values[2]>>8) & 0xff
+        jig_data = bytes([a1, a2, a3, a4, a5, a6])  # ASCII values for D
+        jig_text = jig_data.decode('utf-8')
+        #print(jig_text)
+        part_values=pymc3e.batchread_wordunits(headdevice="D9970",readsize=4)
+        a1 = part_values[0] & 0xff
+        a2 = (part_values[0]>>8) & 0xff
+        a3 = part_values[1] & 0xff
+        a4 = (part_values[1]>>8) & 0xff
+        a5 = part_values[2] & 0xff
+        a6 = (part_values[2]>>8) & 0xff
+        part_data = bytes([a1, a2, a3, a4, a5, a6])  # ASCII values for D
+        part_text = part_data.decode('utf-8')
+        #print(part_text)
+        if master_id == 0 and i == 1:
+            i = 0
+        pymc3e.close()
+    except:
+        sleep(1)
+        pymc3e.close()
+        pass
+    if master_id != 0 and event_id != 0 and line_id != 0 and i == 0:
+        try:
+            mysqlquery(jig_text, part_text, event_id, line_id, master_id)
+            i = 1
+        except:
+            pass
+    sleep(5)
