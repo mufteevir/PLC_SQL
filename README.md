@@ -30,3 +30,12 @@ Snap7 library for connecting all types S7-300 PLCs.
 
 [MasterListSendv3.py](https://github.com/mufteevir/PLC_SQL/blob/master/Siemens/MAsters%20list/MasterListSendv3.py) - reading list of production masters with card number and access level
 and writing this information to PLC S7-300
+
+# Beckhoff PC
+
+Pyads library for connecting to Beckhoff PC
+
+[read_local_data_v2.py](https://github.com/mufteevir/PLC_SQL/blob/master/ADS%20Beckhoff/read_local_data_v2.py) - reading data from PC and write it to SQL DB if data was changed
+
+[MasterListADSv0.1.py](https://github.com/mufteevir/PLC_SQL/blob/master/ADS%20Beckhoff/MasterListADSv0.1.py) - reading list of production masters with card number and access level
+and writing this information to PC
